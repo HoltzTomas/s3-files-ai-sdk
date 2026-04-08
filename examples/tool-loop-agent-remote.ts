@@ -16,7 +16,6 @@ export function createRemoteWorkspaceAgent(model: LanguageModel) {
     remoteEndpoint: requiredEnv("S3_FILES_ENDPOINT"),
     bearerToken: requiredEnv("S3_FILES_BEARER_TOKEN"),
     agentId: process.env.AGENT_ID ?? "agent-remote-demo",
-    lockTimeoutMs: 10_000,
   });
 
   return new ToolLoopAgent({

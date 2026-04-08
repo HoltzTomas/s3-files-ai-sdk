@@ -6,6 +6,7 @@ import { S3FilesError } from "./errors.js";
 
 const textEncoder = new TextEncoder();
 const textDecoder = new TextDecoder();
+const DEFAULT_LOCK_TIMEOUT_MS = 10_000;
 
 export interface CommandExecutorOptions {
   backend: FileSystemBackend;
@@ -19,9 +20,10 @@ export interface CommandExecutorOptions {
 export function createLocalCommandExecutor(
   options: CommandExecutorOptions,
 ): (input: S3FilesToolInput) => Promise<S3FilesToolOutput> {
+  const lockTimeoutMs = options.lockTimeoutMs ?? DEFAULT_LOCK_TIMEOUT_MS;
   const lockManager =
-    options.lockTimeoutMs !== undefined && options.lockTimeoutMs > 0
-      ? new AdvisoryLockManager(options.backend, options.lockTimeoutMs)
+    lockTimeoutMs > 0
+      ? new AdvisoryLockManager(options.backend, lockTimeoutMs)
       : null;
   const maxReadBytes = options.maxReadBytes ?? 32_768;
   const maxReadLines = options.maxReadLines ?? 400;

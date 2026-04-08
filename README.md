@@ -50,7 +50,6 @@ export async function summarizeWorkspace(model: LanguageModel) {
     mode: "direct",
     mountPath: process.env.S3_FILES_MOUNT_PATH ?? "/mnt/agent-fs",
     agentId: process.env.AGENT_ID ?? "agent-direct-demo",
-    lockTimeoutMs: 10_000,
   });
 
   const result = await generateText({
@@ -80,7 +79,6 @@ export function createRemoteWorkspaceAgent(model: LanguageModel) {
     remoteEndpoint: process.env.S3_FILES_ENDPOINT!,
     bearerToken: process.env.S3_FILES_BEARER_TOKEN!,
     agentId: process.env.AGENT_ID ?? "agent-remote-demo",
-    lockTimeoutMs: 10_000,
   });
 
   return new ToolLoopAgent({
@@ -133,11 +131,12 @@ The tool returns compact, command-specific output objects and an even smaller mo
 
 ## Locking
 
-Set `lockTimeoutMs` to enable library-level advisory locking for mutating commands.
+Advisory locking is enabled by default for mutating commands with a `10_000ms` timeout.
 
 - Locks are cooperative, not OS-level mandatory locks
 - Lock directories live under `/.s3-files-locks/` inside the scoped agent root
 - The lock manager cleans up stale leases and times out rather than blocking forever
+- Set `lockTimeoutMs: 0` to disable library-level locking explicitly
 
 Amazon S3 Files itself supports POSIX locking, but this package uses portable sidecar locks so the behavior is predictable across both direct and proxied flows.
 

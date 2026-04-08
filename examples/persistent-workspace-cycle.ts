@@ -15,7 +15,6 @@ export async function runPersistentWorkspaceCycle(model: LanguageModel) {
     mode: "direct",
     mountPath,
     agentId,
-    lockTimeoutMs: 10_000,
   });
 
   const result = await generateText({

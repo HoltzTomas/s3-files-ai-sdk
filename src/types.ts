@@ -18,8 +18,10 @@ export interface BaseS3FilesToolConfig {
    */
   toolName?: string;
   /**
-   * Enables advisory locking for mutating operations.
-   * Set to `undefined` to disable library-level locking.
+   * Advisory lock timeout for mutating operations.
+   * Defaults to `10000`; set to `0` to disable library-level locking.
+   *
+   * @default 10000
    */
   lockTimeoutMs?: number;
   /**

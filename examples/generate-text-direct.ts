@@ -9,7 +9,6 @@ export async function summarizeWorkspace(model: LanguageModel) {
     mode: "direct",
     mountPath,
     agentId,
-    lockTimeoutMs: 10_000,
   });
 
   const result = await generateText({

@@ -1,6 +1,6 @@
 {
   "name": "s3-files-ai-sdk",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Filesystem tools for the Vercel AI SDK backed by Amazon S3 Files.",
   "type": "module",
   "sideEffects": false,

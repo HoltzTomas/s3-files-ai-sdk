@@ -5,7 +5,7 @@ import { s3FilesToolInputSchema, s3FilesToolOutputSchema } from "../core/tool-sc
 export const PROTOCOL_VERSION = "2026-04-07";
 
 export const proxyRuntimeOptionsSchema = z.object({
-  lockTimeoutMs: z.number().int().positive().max(60_000).optional(),
+  lockTimeoutMs: z.number().int().min(0).max(60_000).optional(),
   maxReadBytes: z.number().int().positive().max(1_000_000).optional(),
   maxReadLines: z.number().int().positive().max(10_000).optional(),
   maxListEntries: z.number().int().positive().max(10_000).optional(),

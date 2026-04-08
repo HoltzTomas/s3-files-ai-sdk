@@ -60,6 +60,47 @@ describe("remote proxy mode", () => {
     });
   });
 
+  it("accepts lockTimeoutMs: 0 for remote mode", async () => {
+    const temp = await createTempMount();
+    cleanup = temp.cleanup;
+
+    const handler = createS3FilesProxy({
+      mountPath: temp.mountPath,
+      bearerToken: "secret-token",
+    });
+
+    const filesystem = createS3FilesTool({
+      mode: "remote",
+      remoteEndpoint: "https://example.test/api/fs",
+      bearerToken: "secret-token",
+      agentId: "agent-remote-no-locks",
+      lockTimeoutMs: 0,
+      fetch: async (input, init) => {
+        const url = typeof input === "string" ? input : input.toString();
+        return handler(new Request(url, init));
+      },
+    });
+
+    const execute = filesystem.tool.execute;
+    if (!execute) {
+      throw new Error("Expected the tool to have an execute function.");
+    }
+
+    const result = await execute(
+      {
+        command: "write",
+        path: "/remote.txt",
+        content: "remote contents",
+      },
+      toolExecutionOptions,
+    );
+
+    expect(result).toMatchObject({
+      command: "write",
+      bytesWritten: 15,
+    });
+  });
+
   it("retries retryable proxy failures and surfaces auth errors", async () => {
     const temp = await createTempMount();
     cleanup = temp.cleanup;
