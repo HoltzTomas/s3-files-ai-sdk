@@ -1,0 +1,44 @@
+{
+  "name": "s3-files-ai-sdk",
+  "version": "0.1.0",
+  "description": "AI SDK filesystem tools backed by Amazon S3 Files mounts.",
+  "type": "module",
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.node.d.ts",
+      "node": "./dist/index.node.js",
+      "default": "./dist/index.web.js"
+    },
+    "./proxy": {
+      "types": "./dist/proxy.d.ts",
+      "default": "./dist/proxy.js"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "peerDependencies": {
+    "ai": "^6.0.0"
+  },
+  "dependencies": {
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/node": "^24.7.2",
+    "ai": "^6.0.152",
+    "tsup": "^8.5.1",
+    "typescript": "^6.0.2",
+    "vitest": "^4.1.3"
+  }
+}
