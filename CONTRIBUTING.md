@@ -54,6 +54,13 @@ npm run changeset
 
 Choose the appropriate bump level and describe the change in plain language. Maintainers will use the generated version PR and publish workflow for releases.
 
+The npm release workflow supports two publish paths:
+
+- OIDC trusted publishing for normal releases after the package already exists on npm
+- `NPM_TOKEN` bootstrap publishing for the very first public release of a brand-new package
+
+That bootstrap step is intentional. npm trusted publishers are configured on the npm package itself, so the package has to exist before the workflow can rely on OIDC alone. After the first publish, maintainers can remove the token dependency and let trusted publishing handle future releases.
+
 ## Pull Requests
 
 - Keep PRs focused

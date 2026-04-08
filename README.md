@@ -185,4 +185,11 @@ npm install
 npm run ci
 ```
 
+## Releasing
+
+This repo uses Changesets and GitHub Actions for releases.
+
+- Normal releases can use npm trusted publishing with GitHub OIDC
+- The first-ever publish of a brand-new package still needs `NPM_TOKEN` so npm can create the package before a trusted publisher is attached
+
 For contribution and release details, see [`CONTRIBUTING.md`](./CONTRIBUTING.md).

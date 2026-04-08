@@ -24,7 +24,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           cache: npm
           registry-url: https://registry.npmjs.org
 
@@ -33,6 +33,28 @@ jobs:
 
       - name: Validate package before release
         run: npm run ci
+
+      - name: Check npm publish mode
+        env:
+          HAS_NPM_TOKEN: ${{ secrets.NPM_TOKEN != '' }}
+        run: |
+          set -euo pipefail
+
+          PACKAGE_NAME="$(node --print "JSON.parse(require('node:fs').readFileSync('package.json', 'utf8')).name")"
+
+          if npm view "$PACKAGE_NAME" version >/dev/null 2>&1; then
+            echo "Package $PACKAGE_NAME already exists on npm. Trusted publishing can be used."
+            exit 0
+          fi
+
+          echo "Package $PACKAGE_NAME has not been published yet."
+
+          if [ "$HAS_NPM_TOKEN" != "true" ]; then
+            echo "::error title=Bootstrap publish requires NPM_TOKEN::The first publish for $PACKAGE_NAME still needs an npm access token. npm trusted publishers are configured on an existing package, so add the NPM_TOKEN GitHub secret for the initial release or publish 0.1.0 manually once, then rerun this workflow."
+            exit 1
+          fi
+
+          echo "Using NPM_TOKEN for the bootstrap publish of $PACKAGE_NAME."
 
       - name: Create version PR or publish
         uses: changesets/action@v1
