@@ -1,16 +1,37 @@
 {
   "name": "s3-files-ai-sdk",
   "version": "0.1.0",
-  "description": "AI SDK filesystem tools backed by Amazon S3 Files mounts.",
+  "description": "Filesystem tools for the Vercel AI SDK backed by Amazon S3 Files.",
   "type": "module",
   "sideEffects": false,
+  "license": "MIT",
+  "packageManager": "npm@10.9.3",
   "files": [
     "dist",
-    "README.md"
+    "README.md",
+    "LICENSE"
   ],
   "engines": {
     "node": ">=20"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HoltzTomas/s3-files-ai-sdk.git"
+  },
+  "homepage": "https://github.com/HoltzTomas/s3-files-ai-sdk#readme",
+  "bugs": {
+    "url": "https://github.com/HoltzTomas/s3-files-ai-sdk/issues"
+  },
+  "keywords": [
+    "ai",
+    "ai-sdk",
+    "vercel-ai-sdk",
+    "amazon-s3",
+    "s3-files",
+    "filesystem",
+    "agents",
+    "serverless"
+  ],
   "exports": {
     ".": {
       "types": "./dist/index.node.d.ts",
@@ -24,9 +45,15 @@
   },
   "scripts": {
     "build": "tsup",
+    "prepack": "npm run build",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "pack:check": "npm pack --dry-run",
+    "ci": "npm run typecheck && npm test && npm run build && npm run pack:check",
+    "changeset": "changeset",
+    "version-packages": "changeset version",
+    "release": "changeset publish"
   },
   "peerDependencies": {
     "ai": "^6.0.0"
@@ -35,10 +62,16 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@changesets/changelog-github": "^0.6.0",
+    "@changesets/cli": "^2.30.0",
     "@types/node": "^24.7.2",
     "ai": "^6.0.152",
     "tsup": "^8.5.1",
     "typescript": "^6.0.2",
     "vitest": "^4.1.3"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
   }
 }

@@ -1,28 +1,28 @@
-import { ToolLoopAgent } from "ai";
+import { ToolLoopAgent, type LanguageModel } from "ai";
 import { createS3FilesTool } from "s3-files-ai-sdk";
 
-declare const model: ConstructorParameters<typeof ToolLoopAgent>[0]["model"];
+function requiredEnv(name: string): string {
+  const value = process.env[name];
+  if (!value) {
+    throw new Error(`Missing required environment variable: ${name}`);
+  }
 
-const agentFs = createS3FilesTool({
-  mode: "remote",
-  remoteEndpoint: "https://fs.example.com/api/fs",
-  bearerToken: "replace-me",
-  agentId: "agent-123abc",
-  lockTimeoutMs: 10_000,
-});
-
-const agent = new ToolLoopAgent({
-  model,
-  tools: agentFs.tools,
-  instructions: "Use the filesystem tool to inspect and update project files.",
-});
-
-async function main() {
-  const result = await agent.generate({
-    prompt: "Open /notes/idea.md, improve the draft, and save the result.",
-  });
-
-  console.log(result.text);
+  return value;
 }
 
-void main();
+export function createRemoteWorkspaceAgent(model: LanguageModel) {
+  const agentFs = createS3FilesTool({
+    mode: "remote",
+    remoteEndpoint: requiredEnv("S3_FILES_ENDPOINT"),
+    bearerToken: requiredEnv("S3_FILES_BEARER_TOKEN"),
+    agentId: process.env.AGENT_ID ?? "agent-remote-demo",
+    lockTimeoutMs: 10_000,
+  });
+
+  return new ToolLoopAgent({
+    model,
+    tools: agentFs.tools,
+    instructions:
+      "Use the filesystem tool to inspect, update, and persist project files.",
+  });
+}

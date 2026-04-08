@@ -1,23 +1,23 @@
-import { generateText } from "ai";
+import { generateText, type LanguageModel } from "ai";
 import { createS3FilesTool } from "s3-files-ai-sdk";
 
-declare const model: Parameters<typeof generateText>[0]["model"];
+const mountPath = process.env.S3_FILES_MOUNT_PATH ?? "/mnt/agent-fs";
+const agentId = process.env.AGENT_ID ?? "agent-direct-demo";
 
-const agentFs = createS3FilesTool({
-  mode: "direct",
-  mountPath: "/mnt/agent-fs",
-  agentId: "agent-123abc",
-  lockTimeoutMs: 10_000,
-});
-
-async function main() {
-  const result = await generateText({
-    model,
-    prompt: "Read /notes and summarize the current project ideas.",
-    tools: agentFs.tools,
+export async function summarizeWorkspace(model: LanguageModel) {
+  const agentFs = createS3FilesTool({
+    mode: "direct",
+    mountPath,
+    agentId,
+    lockTimeoutMs: 10_000,
   });
 
-  console.log(result.text);
-}
+  const result = await generateText({
+    model,
+    tools: agentFs.tools,
+    prompt:
+      "List /notes, read the most relevant file, and summarize the current project state.",
+  });
 
-void main();
+  return result.text;
+}

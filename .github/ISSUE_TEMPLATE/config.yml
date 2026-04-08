@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/HoltzTomas/s3-files-ai-sdk/security/advisories/new
+    about: Please report security issues privately through GitHub Security Advisories.
